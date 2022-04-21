@@ -76,6 +76,10 @@
       (test === undefined || test.id !== $store.selectedTest)
     ) {
       test = $store.tests.find(test => test.id === $store.selectedTest);
+      success = undefined;
+      loading = false;
+      executionTime = 0;
+      opHash = "";
     }
   });
 </script>

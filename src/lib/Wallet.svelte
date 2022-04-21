@@ -82,6 +82,11 @@
       const Tezos = new TezosToolkit(rpcUrl[$store.networkType]);
       Tezos.setWalletProvider(wallet);
       store.updateTezos(Tezos);
+
+      const balance = await Tezos.tz.getBalance(userAddress);
+      if (balance) {
+        store.updateUserBalance(balance.toNumber());
+      }
     }
   });
 
@@ -103,6 +108,7 @@
     -webkit-backdrop-filter: blur(4px);
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.18);
+    justify-content: space-between;
 
     padding: 10px;
     margin: 10px 0px;
@@ -181,7 +187,7 @@
       </span>
       <span>
         {#if $store.userBalance}
-          {formatTokenAmount($store.userBalance)} ꜩ
+          {formatTokenAmount($store.userBalance / 10 ** 6)} ꜩ
         {:else}
           0 ꜩ
         {/if}

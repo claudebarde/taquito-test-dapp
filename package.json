@@ -1,0 +1,32 @@
+{
+  "name": "my-app",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "svelte-kit dev --port=3030",
+    "build": "svelte-kit build",
+    "package": "svelte-kit package",
+    "preview": "svelte-kit preview",
+    "prepare": "svelte-kit sync",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "next",
+    "@sveltejs/kit": "next",
+    "buffer": "^6.0.3",
+    "events": "^3.3.0",
+    "libsodium-wrappers": "^0.7.10",
+    "sass": "^1.50.0",
+    "svelte": "^3.44.0",
+    "svelte-check": "^2.2.6",
+    "svelte-preprocess": "^4.10.1",
+    "tslib": "^2.3.1",
+    "typescript": "~4.6.2",
+    "vite-compatible-readable-stream": "^3.6.0"
+  },
+  "type": "module",
+  "dependencies": {
+    "@taquito/beacon-wallet": "^12.0.3",
+    "@taquito/taquito": "^12.0.3"
+  }
+}

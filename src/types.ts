@@ -14,7 +14,26 @@ export interface TestSettings {
   showExecutionTime: boolean;
   inputRequired: boolean;
   inputType?: "string" | "set-limits";
+  lastResult: { option: "none" | "some"; val: boolean };
 }
 
 export type TezosContractAddress = `KT1${string}`;
 export type TezosAccountAddress = `tz${"1" | "2" | "3"}${string}`;
+
+export enum NetworkType {
+  MAINNET = "mainnet",
+  DELPHINET = "delphinet",
+  EDONET = "edonet",
+  FLORENCENET = "florencenet",
+  GRANADANET = "granadanet",
+  HANGZHOUNET = "hangzhounet",
+  ITHACANET = "ithacanet",
+  JAKARTANET = "jakartanet",
+  CUSTOM = "custom"
+}
+
+export enum SigningType {
+  RAW = "raw", // Arbitrary payload (string), which will be hashed before signing
+  OPERATION = "operation", // "03" prefix
+  MICHELINE = "micheline" // "05" prefix
+}

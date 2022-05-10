@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Sidebar from "$lib/Sidebar.svelte";
-  import TaquitoLogo from "$lib/TaquitoLogo.svelte";
-  import "../styles/index.scss";
+  import Sidebar from "./lib/Sidebar.svelte";
+  import TaquitoLogo from "./lib/TaquitoLogo.svelte";
+  import store from "./store";
 </script>
 
 <style lang="scss">
@@ -25,7 +25,11 @@
 </style>
 
 <main>
-  <div class="dapp-title">Taquito Test Dapp</div>
+  <div class="dapp-title">
+    Taquito Test Dapp {$store.Tezos
+      ? `(v${$store.Tezos.getVersionInfo().version})`
+      : ""}
+  </div>
   <Sidebar />
   <slot />
 </main>

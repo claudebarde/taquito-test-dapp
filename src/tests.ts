@@ -9,7 +9,7 @@ import type { ContractProvider } from "@taquito/taquito";
 import type { BeaconWallet } from "@taquito/beacon-wallet";
 import { char2Bytes, verifySignature } from "@taquito/utils";
 import type { RequestSignPayloadInput } from "@airgap/beacon-sdk";
-import { SigningType } from "@airgap/beacon-sdk";
+import { SigningType } from "./types";
 import { get } from "svelte/store";
 import type { TestSettings, TestResult } from "./types";
 import store from "./store";
@@ -23,7 +23,7 @@ const preparePayloadToSign = (
   payload: RequestSignPayloadInput;
   formattedInput: string;
 } => {
-  const formattedInput = `Tezos Signed Message: beacon-test-dapp.netlify.app/ ${new Date().toISOString()} ${input}`;
+  const formattedInput = `Tezos Signed Message: taquito-test-dapp.netlify.app/ ${new Date().toISOString()} ${input}`;
   const bytes = char2Bytes(formattedInput);
   const payload: RequestSignPayloadInput = {
     signingType: SigningType.MICHELINE,
@@ -546,7 +546,8 @@ export const init = (
     description: "This test sends 0.1 tez to Alice's address",
     run: () => sendTez(Tezos),
     showExecutionTime: false,
-    inputRequired: false
+    inputRequired: false,
+    lastResult: { option: "none", val: false }
   },
   {
     id: "contract-call-simple-type",
@@ -554,7 +555,8 @@ export const init = (
     description: "This test calls a contract entrypoint and passes an int",
     run: () => sendInt(contract),
     showExecutionTime: false,
-    inputRequired: false
+    inputRequired: false,
+    lastResult: { option: "none", val: false }
   },
   {
     id: "contract-call-complex-type",
@@ -563,7 +565,8 @@ export const init = (
       "This test calls a contract entrypoint and passes a pair holding a nat and a string",
     run: () => sendComplexParam(contract),
     showExecutionTime: false,
-    inputRequired: false
+    inputRequired: false,
+    lastResult: { option: "none", val: false }
   },
   {
     id: "contract-call-fail",
@@ -572,7 +575,8 @@ export const init = (
       'This test calls a contract entrypoint that fails with the message "Fail entrypoint"',
     run: () => callFail(contract),
     showExecutionTime: false,
-    inputRequired: false
+    inputRequired: false,
+    lastResult: { option: "none", val: false }
   },
   {
     id: "contract-call-fail-with-int",
@@ -580,7 +584,8 @@ export const init = (
     description: "This test calls a contract entrypoint that fails with an int",
     run: () => callFaiWithInt(contract),
     showExecutionTime: false,
-    inputRequired: false
+    inputRequired: false,
+    lastResult: { option: "none", val: false }
   },
   {
     id: "contract-call-fail-with-pair",
@@ -588,7 +593,8 @@ export const init = (
     description: "This test calls a contract entrypoint that fails with a pair",
     run: () => callFaiWithPair(contract),
     showExecutionTime: false,
-    inputRequired: false
+    inputRequired: false,
+    lastResult: { option: "none", val: false }
   },
   {
     id: "originate-success",
@@ -596,7 +602,8 @@ export const init = (
     description: "This test successfully originates a smart contract",
     run: () => originateSuccess(Tezos),
     showExecutionTime: false,
-    inputRequired: false
+    inputRequired: false,
+    lastResult: { option: "none", val: false }
   },
   {
     id: "batch-api",
@@ -604,7 +611,8 @@ export const init = (
     description: "This test sends 0.3 tez to 3 different addresses",
     run: () => batchApiTest(Tezos),
     showExecutionTime: false,
-    inputRequired: false
+    inputRequired: false,
+    lastResult: { option: "none", val: false }
   },
   {
     id: "batch-api-contract-call",
@@ -617,7 +625,8 @@ export const init = (
         wallet ? Tezos.wallet : Tezos.contract
       ),
     showExecutionTime: false,
-    inputRequired: false
+    inputRequired: false,
+    lastResult: { option: "none", val: false }
   },
   {
     id: "sign-payload",
@@ -626,7 +635,8 @@ export const init = (
     run: input => signPayload(input.text, wallet),
     showExecutionTime: false,
     inputRequired: true,
-    inputType: "string"
+    inputType: "string",
+    lastResult: { option: "none", val: false }
   },
   {
     id: "sign-payload-and-send",
@@ -636,7 +646,8 @@ export const init = (
     run: input => signPayloadAndSend(input.text, wallet, contract),
     showExecutionTime: false,
     inputRequired: true,
-    inputType: "string"
+    inputType: "string",
+    lastResult: { option: "none", val: false }
   },
   {
     id: "verify-signature",
@@ -646,7 +657,8 @@ export const init = (
     run: input => verifySignatureWithTaquito(input.text, wallet, contract),
     showExecutionTime: false,
     inputRequired: true,
-    inputType: "string"
+    inputType: "string",
+    lastResult: { option: "none", val: false }
   },
   {
     id: "set-transaction-limits",
@@ -662,7 +674,8 @@ export const init = (
       ),
     showExecutionTime: false,
     inputRequired: true,
-    inputType: "set-limits"
+    inputType: "set-limits",
+    lastResult: { option: "none", val: false }
   },
   {
     id: "confirmation-observable",
@@ -672,7 +685,8 @@ export const init = (
     run: () =>
       tryConfirmationObservable(contract as ContractAbstraction<Wallet>),
     showExecutionTime: false,
-    inputRequired: false
+    inputRequired: false,
+    lastResult: { option: "none", val: false }
   },
   {
     id: "permit",
@@ -680,7 +694,8 @@ export const init = (
     description: "This test implements TZIP-17",
     run: () => permit(Tezos, wallet),
     showExecutionTime: false,
-    inputRequired: false
+    inputRequired: false,
+    lastResult: { option: "none", val: false }
   }
   /*{
         id: "originate-fail",

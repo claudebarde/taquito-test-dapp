@@ -68,6 +68,16 @@
           vertical-align: top;
         }
 
+        &.selected {
+          list-style-image: url(description_blue_24dp.svg);
+        }
+        &.success {
+          list-style-image: url(description_green_24dp.svg);
+        }
+        &.error {
+          list-style-image: url(description_red_24dp.svg);
+        }
+
         @supports not (backdrop-filter: blur(4px)) {
           background: rgba(80, 227, 194, 0.9);
         }
@@ -92,8 +102,14 @@
       {#each $store.tests as test}
         <li
           id={test.id}
-          on:click={() => store.updateSelectedTest(test.id)}
           style="cursor:pointer"
+          class:success={test.lastResult.option === "some" &&
+            test.lastResult.val}
+          class:error={test.lastResult.option === "some" &&
+            !test.lastResult.val}
+          class:selected={$store.selectedTest === test.id &&
+            test.lastResult.option === "none"}
+          on:click={() => store.updateSelectedTest(test.id)}
         >
           <span>{test.name}</span>
         </li>

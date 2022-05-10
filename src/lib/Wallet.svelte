@@ -2,7 +2,7 @@
   import { onMount, afterUpdate } from "svelte";
   import { TezosToolkit } from "@taquito/taquito";
   import { BeaconWallet } from "@taquito/beacon-wallet";
-  import { BeaconEvent, defaultEventCallbacks } from "@airgap/beacon-sdk";
+  // import { BeaconEvent, defaultEventCallbacks } from "@airgap/beacon-sdk";
   import store from "../store";
   import { formatTokenAmount, shortenHash } from "../utils";
   import { defaultMatrixNode, rpcUrl, defaultNetworkType } from "../config";
@@ -17,17 +17,17 @@
         ? {
             name: "Taquito Test Dapp",
             matrixNodes: [defaultMatrixNode] as any,
-            preferredNetwork: $store.networkType,
-            disableDefaultEvents: true, // Disable all events / UI. This also disables the pairing alert.
-            eventHandlers: {
-              // To keep the pairing alert, we have to add the following default event handlers back
-              [BeaconEvent.PAIR_INIT]: {
-                handler: defaultEventCallbacks.PAIR_INIT
-              },
-              [BeaconEvent.PAIR_SUCCESS]: {
-                handler: defaultEventCallbacks.PAIR_SUCCESS
-              }
-            }
+            preferredNetwork: $store.networkType
+            // disableDefaultEvents: true // Disable all events / UI. This also disables the pairing alert.
+            // eventHandlers: {
+            //   // To keep the pairing alert, we have to add the following default event handlers back
+            //   [BeaconEvent.PAIR_INIT]: {
+            //     handler: defaultEventCallbacks.PAIR_INIT
+            //   },
+            //   [BeaconEvent.PAIR_SUCCESS]: {
+            //     handler: defaultEventCallbacks.PAIR_SUCCESS
+            //   }
+            // }
           }
         : {
             name: "Taquito Test Dapp",

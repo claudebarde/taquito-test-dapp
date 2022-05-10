@@ -1,9 +1,10 @@
 <script lang="ts">
   import { TezosToolkit } from "@taquito/taquito";
-  import { NetworkType } from "@airgap/beacon-sdk";
-  import { rpcUrl, defaultMatrixNode } from "../config";
-  import store from "../store";
-  import TestContainer from "$lib/TestContainer.svelte";
+  import { NetworkType } from "./types";
+  import { rpcUrl, defaultMatrixNode } from "./config";
+  import store from "./store";
+  import Layout from "./Layout.svelte";
+  import TestContainer from "./lib/TestContainer.svelte";
 
   const changeNetwork = event => {
     switch (event.target.value) {
@@ -25,6 +26,7 @@
         break;
     }
   };
+
   const changeMatrixNode = event => {
     switch (event.target.value) {
       case "default":
@@ -93,54 +95,61 @@
   }
 </style>
 
-{#if $store.userAddress}
-  <TestContainer />
-{:else}
-  <div class="connect-container">
-    <div class="connect-options">
-      <h1>Welcome to the Taquito test dapp</h1>
-      <div class="options">
-        <button
-          on:click={() => {
-            const wallet = document.getElementById("wallet-button");
-            wallet.click();
-          }}
-        >
-          <span class="material-icons-outlined"> account_balance_wallet </span>
-          &nbsp; Connect your wallet
-        </button>
-        <button>
-          <span class="material-icons-outlined"> usb </span>
-          &nbsp; Connect your Nano ledger
-        </button>
-        <label for="rpc-node-select">
-          <span class="select-title">RPC node:</span>
-          <select
-            id="rpc-node-select"
-            value={$store.networkType}
-            on:change={changeNetwork}
-            on:blur={changeNetwork}
+<Layout>
+  {#if $store.userAddress}
+    <TestContainer />
+  {:else}
+    <div class="connect-container">
+      <div class="connect-options">
+        <h1>Welcome to the Taquito test dapp</h1>
+        <div class="options">
+          <button
+            on:click={() => {
+              const wallet = document.getElementById("wallet-button");
+              wallet.click();
+            }}
           >
-            {#each Object.values(NetworkType) as network}
-              <option value={network} selected={$store.networkType === network}>
-                {network[0].toUpperCase() + network.slice(1)}
-              </option>
-            {/each}
-          </select>
-        </label>
-        <label>
-          <span class="select-title">Matrix node:</span>
-          <select on:change={changeMatrixNode} on:blur={changeMatrixNode}>
-            <option value="default">Default</option>
-            <option value="taquito">Taquito</option>
-            <option value="custom">Custom</option>
-          </select>
-        </label>
-        <label>
-          <span class="select-title">Disable default events:</span>
-          <input type="checkbox" bind:checked={$store.disableDefaultEvents} />
-        </label>
+            <span class="material-icons-outlined">
+              account_balance_wallet
+            </span>
+            &nbsp; Connect your wallet
+          </button>
+          <button>
+            <span class="material-icons-outlined"> usb </span>
+            &nbsp; Connect your Nano ledger
+          </button>
+          <label for="rpc-node-select">
+            <span class="select-title">RPC node:</span>
+            <select
+              id="rpc-node-select"
+              value={$store.networkType}
+              on:change={changeNetwork}
+              on:blur={changeNetwork}
+            >
+              {#each Object.values(NetworkType) as network}
+                <option
+                  value={network}
+                  selected={$store.networkType === network}
+                >
+                  {network[0].toUpperCase() + network.slice(1)}
+                </option>
+              {/each}
+            </select>
+          </label>
+          <label>
+            <span class="select-title">Matrix node:</span>
+            <select on:change={changeMatrixNode} on:blur={changeMatrixNode}>
+              <option value="default">Default</option>
+              <option value="taquito">Taquito</option>
+              <option value="custom">Custom</option>
+            </select>
+          </label>
+          <label>
+            <span class="select-title">Disable default events:</span>
+            <input type="checkbox" bind:checked={$store.disableDefaultEvents} />
+          </label>
+        </div>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
+</Layout>

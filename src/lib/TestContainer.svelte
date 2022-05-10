@@ -3,7 +3,7 @@
   import store from "../store";
   import type { TestSettings, TestResult } from "../types";
   import { shortenHash } from "../utils";
-  import { NetworkType } from "@airgap/beacon-sdk";
+  import { NetworkType } from "../types";
 
   let test: TestSettings | undefined;
   let executionTime = 0;
@@ -11,12 +11,14 @@
   let success: boolean | undefined;
   let opHash = "";
   let input = { text: "", fee: "", storageLimit: "", gasLimit: "" };
+  let testResult: { id: string; title: string; body: any };
 
   const run = async () => {
     success = undefined;
     loading = true;
     executionTime = 0;
     opHash = "";
+    testResult = undefined;
     const t1 = performance.now();
     try {
       let result: TestResult;
@@ -36,12 +38,32 @@
         executionTime = (t2 - t1) / 1_000;
         success = true;
         opHash = result.opHash;
+        store.updateTestResult(test.id, true);
         // special output for sign-payload
         if (
           test.id === "sign-payload" ||
           test.id === "sign-payload-and-send" ||
           test.id === "verify-signature"
         ) {
+          testResult = {
+            id: test.id,
+            title: "Signing Result",
+            body: {
+              input: result.sigDetails.input,
+              "formatted input": result.sigDetails.formattedInput,
+              bytes: result.sigDetails.bytes,
+              output: result.output
+            }
+          };
+          //   id: test.id,
+          //   title: "Signing Result",
+          //   body: [
+          //     result.sigDetails.input,
+          //     result.sigDetails.formattedInput,
+          //     result.sigDetails.bytes,
+          //     result.output
+          //   ]
+          // }
           // dispatch("open-modal", {
           //   id: test.id,
           //   title: "Signing Result",
@@ -53,6 +75,11 @@
           //   ]
           // });
         } else if (test.id === "confirmation-observable") {
+          testResult = {
+            id: test.id,
+            title: "Confirmations through observable",
+            body: result.confirmationObsOutput
+          };
           // dispatch("open-modal", {
           //   id: test.id,
           //   title: "Confirmations through observable",
@@ -65,6 +92,7 @@
     } catch (error) {
       console.log(error);
       success = false;
+      store.updateTestResult(test.id, false);
     } finally {
       loading = false;
     }
@@ -102,11 +130,12 @@
       padding: 20px 30px;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       max-width: 50%;
-      max-height: 50%;
+      max-height: 60%;
       text-align: center;
+      overflow: auto;
 
       .test-title {
         padding: 20px;
@@ -221,6 +250,16 @@
     {:else if test}
       <h3 class="test-title">{test.name}</h3>
       <div class="test-description">{test.description}</div>
+      {#if test.inputRequired}
+        <div class="test-input">
+          <textarea
+            cols="30"
+            rows="3"
+            placeholder="Enters the payload here"
+            bind:value={input.text}
+          />
+        </div>
+      {/if}
       <div class="test-run">
         <button on:click={run} disabled={loading}>
           {#if loading}
@@ -233,7 +272,7 @@
           {/if}
         </button>
       </div>
-      {#if success && opHash}
+      {#if success}
         <div class="test-result">
           <h4>
             Test successful! <span class="material-icons-outlined">
@@ -241,36 +280,46 @@
             </span>
           </h4>
           <div>Test run in {executionTime.toLocaleString("en-US")} s</div>
-          <div style="word-break:break-word;">
-            Operation hash:
-            {#if $store.networkType === NetworkType.ITHACANET}
-              <a
-                href={`https://ithacanet.tzkt.io/${opHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+          {#if testResult}
+            <div style="word-break:break-word;">
+              <p>{testResult.title}</p>
+              {#each Object.entries(testResult.body) as [name, res]}
+                <p>{name}: {JSON.stringify(res)}</p>
+              {/each}
+            </div>
+          {/if}
+          {#if opHash}
+            <div style="word-break:break-word;">
+              Operation hash:
+              {#if $store.networkType === NetworkType.ITHACANET}
+                <a
+                  href={`https://ithacanet.tzkt.io/${opHash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {shortenHash(opHash)}
+                </a>
+              {:else if $store.networkType === NetworkType.HANGZHOUNET}
+                <a
+                  href={`https://hangzhounet.tzkt.io/${opHash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {shortenHash(opHash)}
+                </a>
+              {:else if $store.networkType === NetworkType.MAINNET}
+                <a
+                  href={`https://tzkt.io/${opHash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {shortenHash(opHash)}
+                </a>
+              {:else}
                 {shortenHash(opHash)}
-              </a>
-            {:else if $store.networkType === NetworkType.HANGZHOUNET}
-              <a
-                href={`https://hangzhounet.tzkt.io/${opHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {shortenHash(opHash)}
-              </a>
-            {:else if $store.networkType === NetworkType.MAINNET}
-              <a
-                href={`https://tzkt.io/${opHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {shortenHash(opHash)}
-              </a>
-            {:else}
-              {shortenHash(opHash)}
-            {/if}
-          </div>
+              {/if}
+            </div>
+          {/if}
         </div>
       {:else if success === false}
         <div class="test-result">

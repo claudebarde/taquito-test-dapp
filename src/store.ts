@@ -93,6 +93,15 @@ const state = {
     store.update(store => ({
       ...store,
       tests
+    })),
+  updateTestResult: (id: string, res: boolean) =>
+    store.update(store => ({
+      ...store,
+      tests: store.tests.map(test =>
+        test.id === id
+          ? { ...test, lastResult: { option: "some", val: res } }
+          : test
+      )
     }))
 };
 

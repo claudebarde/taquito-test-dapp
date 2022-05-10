@@ -1,4 +1,4 @@
-import { NetworkType } from "@airgap/beacon-sdk";
+import { NetworkType } from "./types";
 
 export const rpcUrl = {
   hangzhounet: "https://hangzhounet.api.tez.ie", //"https://hangzhounet-tezos.giganode.io",

@@ -10,7 +10,7 @@
   let loading = false;
   let success: boolean | undefined;
   let opHash = "";
-  let input = { text: "", fee: "", storageLimit: "", gasLimit: "" };
+  let input = { text: "", fee: 400, storageLimit: 400, gasLimit: 4000 };
   let testResult: { id: string; title: string; body: any };
 
   const run = async () => {
@@ -55,36 +55,12 @@
               output: result.output
             }
           };
-          //   id: test.id,
-          //   title: "Signing Result",
-          //   body: [
-          //     result.sigDetails.input,
-          //     result.sigDetails.formattedInput,
-          //     result.sigDetails.bytes,
-          //     result.output
-          //   ]
-          // }
-          // dispatch("open-modal", {
-          //   id: test.id,
-          //   title: "Signing Result",
-          //   body: [
-          //     result.sigDetails.input,
-          //     result.sigDetails.formattedInput,
-          //     result.sigDetails.bytes,
-          //     result.output
-          //   ]
-          // });
         } else if (test.id === "confirmation-observable") {
           testResult = {
             id: test.id,
             title: "Confirmations through observable",
             body: result.confirmationObsOutput
           };
-          // dispatch("open-modal", {
-          //   id: test.id,
-          //   title: "Confirmations through observable",
-          //   body: result.confirmationObsOutput
-          // });
         }
       } else {
         throw "Error";
@@ -164,6 +140,26 @@
 
         & > div {
           padding: 5px 0px;
+        }
+      }
+
+      .test-input {
+        &.test-limits {
+          display: flex;
+
+          input[type="number"] {
+            margin-top: 5px;
+            transition: 0.5s;
+
+            &::-webkit-inner-spin-button,
+            &::-webkit-outer-spin-button {
+              opacity: 0;
+            }
+
+            &:focus {
+              border-color: rgba(2, 83, 185, 1);
+            }
+          }
         }
       }
 
@@ -250,7 +246,7 @@
     {:else if test}
       <h3 class="test-title">{test.name}</h3>
       <div class="test-description">{test.description}</div>
-      {#if test.inputRequired}
+      {#if test.inputRequired && test.inputType === "string"}
         <div class="test-input">
           <textarea
             cols="30"
@@ -258,6 +254,29 @@
             placeholder="Enters the payload here"
             bind:value={input.text}
           />
+        </div>
+      {:else if test.inputRequired && test.inputType === "set-limits"}
+        <div class="test-input test-limits">
+          <label for="set-limit-fee">
+            <span>Fee</span>
+            <input type="number" id="set-limit-fee" bind:value={input.fee} />
+          </label>
+          <label for="set-limit-storage">
+            <span>Storage</span>
+            <input
+              type="number"
+              id="set-limit-storage"
+              bind:value={input.storageLimit}
+            />
+          </label>
+          <label for="set-limit-gas">
+            <span>Gas</span>
+            <input
+              type="number"
+              id="set-limit-gas"
+              bind:value={input.gasLimit}
+            />
+          </label>
         </div>
       {/if}
       <div class="test-run">

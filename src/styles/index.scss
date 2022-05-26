@@ -77,3 +77,11 @@ textarea {
   padding: 5px;
   border-radius: $std-border-radius;
 }
+
+input {
+  outline: none;
+  resize: none;
+  border: solid 2px transparent;
+  padding: 5px;
+  border-radius: $std-border-radius;
+}

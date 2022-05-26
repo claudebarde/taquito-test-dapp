@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, afterUpdate } from "svelte";
+  import { fly } from "svelte/transition";
   import { TezosToolkit } from "@taquito/taquito";
   import { BeaconWallet } from "@taquito/beacon-wallet";
   // import { BeaconEvent, defaultEventCallbacks } from "@airgap/beacon-sdk";
@@ -57,6 +58,11 @@
       const Tezos = new TezosToolkit(rpcUrl[$store.networkType]);
       Tezos.setWalletProvider($store.wallet);
       store.updateTezos(Tezos);
+
+      const balance = await Tezos.tz.getBalance(userAddress);
+      if (balance) {
+        store.updateUserBalance(balance.toNumber());
+      }
     } catch (err) {
       console.error(err);
     }
@@ -129,7 +135,7 @@
       position: absolute;
       top: 100%;
       left: 40%;
-      background: rgba(255, 255, 255, 0.25);
+      background-color: rgba(5, 130, 204, 0.9);
       box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
       backdrop-filter: blur(6px);
       -webkit-backdrop-filter: blur(6px);
@@ -194,7 +200,7 @@
       </span>
     </button>
     {#if showDialog}
-      <div class="wallet-dialog">
+      <div class="wallet-dialog" transition:fly={{ duration: 500, x: -500 }}>
         <div class="wallet-dialog__title">My wallet</div>
         <div class="wallet-menu__info">
           <div>Address: {shortenHash($store.userAddress)}</div>
